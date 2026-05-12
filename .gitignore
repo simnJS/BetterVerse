@@ -1,0 +1,11 @@
+# Ignore everything by default
+*
+
+# Whitelist only the library and the test device
+!.gitignore
+!README.md
+!Content/
+Content/*
+!Content/BetterVerse/
+!Content/BetterVerse/**
+!Content/MathUnitTest.verse
