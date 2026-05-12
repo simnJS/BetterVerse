@@ -34,15 +34,16 @@ FastSlice<public>(Arr:[]t, Start:int, Stop:int where t:type)<computes><decides>:
     for (J := Start..Stop - 1, X := Arr[J]) { X }
 
 # ~3.1x faster than Arr.RemoveElement[Idx].
+# `J < Idx or J > Idx` is faster than `J <> Idx` in the for filter clause.
 (Arr:[]t).FastRemoveElement<public>(IdxToRemove:int where t:type)<computes><decides>:[]t =
     0 <= IdxToRemove
     IdxToRemove < Arr.Length
-    for (J -> X : Arr, J <> IdxToRemove) { X }
+    for (J -> X : Arr, J < IdxToRemove or J > IdxToRemove) { X }
 
 FastRemoveElement<public>(Arr:[]t, IdxToRemove:int where t:type)<computes><decides>:[]t =
     0 <= IdxToRemove
     IdxToRemove < Arr.Length
-    for (J -> X : Arr, J <> IdxToRemove) { X }
+    for (J -> X : Arr, J < IdxToRemove or J > IdxToRemove) { X }
 
 # ~3.2x faster than Arr.ReplaceElement[Idx, Val].
 (Arr:[]t).FastReplaceElement<public>(IdxToReplace:int, NewValue:t where t:type)<computes><decides>:[]t =
@@ -72,7 +73,7 @@ FastRemoveAllElements<public>(Arr:[]t, Val:t where t:subtype(comparable))<comput
                 break
         break
     FoundIdx >= 0
-    for (J -> X : Arr, J <> FoundIdx) { X }
+    for (J -> X : Arr, J < FoundIdx or J > FoundIdx) { X }
 
 FastRemoveFirstElement<public>(Arr:[]t, Val:t where t:subtype(comparable))<transacts><decides>:[]t =
     var FoundIdx:int = -1
@@ -83,7 +84,7 @@ FastRemoveFirstElement<public>(Arr:[]t, Val:t where t:subtype(comparable))<trans
                 break
         break
     FoundIdx >= 0
-    for (J -> X : Arr, J <> FoundIdx) { X }
+    for (J -> X : Arr, J < FoundIdx or J > FoundIdx) { X }
 
 # ~4.1x faster than Arr.ReplaceFirstElement[Old, New]. Same failable semantics.
 (Arr:[]t).FastReplaceFirstElement<public>(Old:t, New:t where t:subtype(comparable))<transacts><decides>:[]t =

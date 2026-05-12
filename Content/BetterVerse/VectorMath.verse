@@ -376,3 +376,60 @@ FastIsAlmostEqual<public>(V1:vector2, V2:vector2, Tol:float)<computes><decides>:
     (V.X - V.X) = 0.0
     (V.Y - V.Y) = 0.0
     V
+
+# ===================== Vector2i operators (~2x faster) =====================
+
+# ~2.3x faster than A + B.
+FastAdd<public>(A:vector2i, B:vector2i)<computes>:vector2i =
+    vector2i{ X := A.X + B.X, Y := A.Y + B.Y }
+
+(A:vector2i).FastAdd<public>(B:vector2i)<computes>:vector2i =
+    vector2i{ X := A.X + B.X, Y := A.Y + B.Y }
+
+# ~2.3x faster than A - B.
+FastSub<public>(A:vector2i, B:vector2i)<computes>:vector2i =
+    vector2i{ X := A.X - B.X, Y := A.Y - B.Y }
+
+(A:vector2i).FastSub<public>(B:vector2i)<computes>:vector2i =
+    vector2i{ X := A.X - B.X, Y := A.Y - B.Y }
+
+# ~2.3x faster than V * S.
+FastMulScalar<public>(V:vector2i, S:int)<computes>:vector2i =
+    vector2i{ X := V.X * S, Y := V.Y * S }
+
+(V:vector2i).FastMulScalar<public>(S:int)<computes>:vector2i =
+    vector2i{ X := V.X * S, Y := V.Y * S }
+
+# ~2.2x faster than -V.
+FastNeg<public>(V:vector2i)<computes>:vector2i =
+    vector2i{ X := -V.X, Y := -V.Y }
+
+(V:vector2i).FastNeg<public>()<computes>:vector2i =
+    vector2i{ X := -V.X, Y := -V.Y }
+
+# ~17x faster than DotProduct(A, B).
+FastDot<public>(A:vector2i, B:vector2i)<computes>:int =
+    A.X*B.X + A.Y*B.Y
+
+(A:vector2i).FastDot<public>(B:vector2i)<computes>:int =
+    A.X*B.X + A.Y*B.Y
+
+# ~3.5x faster than TransformVector(T, V). Bypasses transform struct marshalling
+# (still uses native RotateVector since rotation is opaque).
+FastTransformVector<public>(T:transform, V:vector3)<computes><reads>:vector3 =
+    Scaled := vector3{ X := V.X * T.Scale.X, Y := V.Y * T.Scale.Y, Z := V.Z * T.Scale.Z }
+    Rotated := T.Rotation.RotateVector(Scaled)
+    vector3{
+        X := Rotated.X + T.Translation.X,
+        Y := Rotated.Y + T.Translation.Y,
+        Z := Rotated.Z + T.Translation.Z
+    }
+
+(T:transform).FastTransformVector<public>(V:vector3)<computes><reads>:vector3 =
+    Scaled := vector3{ X := V.X * T.Scale.X, Y := V.Y * T.Scale.Y, Z := V.Z * T.Scale.Z }
+    Rotated := T.Rotation.RotateVector(Scaled)
+    vector3{
+        X := Rotated.X + T.Translation.X,
+        Y := Rotated.Y + T.Translation.Y,
+        Z := Rotated.Z + T.Translation.Z
+    }

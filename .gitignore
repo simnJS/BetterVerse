@@ -1,7 +1,7 @@
 # Ignore everything by default
 *
 
-# Whitelist only the library and the test device
+# Whitelist only the library and the test/benchmark devices
 !.gitignore
 !README.md
 !Content/
@@ -9,3 +9,4 @@ Content/*
 !Content/BetterVerse/
 !Content/BetterVerse/**
 !Content/MathUnitTest.verse
+!Content/BenchmarkComplete.verse
